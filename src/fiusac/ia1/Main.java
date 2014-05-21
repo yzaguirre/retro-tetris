@@ -20,7 +20,7 @@ import javax.swing.JToggleButton;
  *
  */
 public class Main extends JFrame {
-
+	private Canvas canvas;
 	public static final ImageCache ic;
 	static {
 		ic = new ImageCache();
@@ -34,7 +34,7 @@ public class Main extends JFrame {
 		setBounds(0,0,1050,825);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setLayout(null);
-		add(new Canvas());
+		add(canvas = new Canvas());
 		
 		JPanel jp = new JPanel();
 		jp.setLayout(new GridLayout(5, 3, 2, 2));
@@ -136,7 +136,7 @@ public class Main extends JFrame {
 				if (currentSelectedPiece == null){
 					System.out.println("no ha seleccionado ni rosca");
 				} else {
-					System.out.println("confirmado " + currentSelectedPiece);
+					canvas.newMove(currentSelectedPiece);
 					bg.clearSelection();
 					currentSelectedPiece = null;
 				}
