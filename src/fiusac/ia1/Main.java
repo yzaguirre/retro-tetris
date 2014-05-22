@@ -3,7 +3,9 @@
  */
 package fiusac.ia1;
 
+import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.Font;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -12,6 +14,7 @@ import javax.swing.ButtonGroup;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JToggleButton;
 
@@ -21,6 +24,7 @@ import javax.swing.JToggleButton;
  */
 public class Main extends JFrame {
 	private Canvas canvas;
+	private JLabel jlScoreBoard;
 	public static final ImageCache ic;
 	static {
 		ic = new ImageCache();
@@ -34,7 +38,18 @@ public class Main extends JFrame {
 		setBounds(0,0,1050,825);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setLayout(null);
-		add(canvas = new Canvas());
+		
+		
+		jlScoreBoard = new JLabel("00");
+		jlScoreBoard.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 30));
+		jlScoreBoard.setHorizontalAlignment(JLabel.RIGHT);
+		jlScoreBoard.setBounds(840, 370, 150, 40);
+		jlScoreBoard.setOpaque(true);
+		jlScoreBoard.setBackground(Color.GRAY);
+		
+		add(jlScoreBoard);
+		
+		add(canvas = new Canvas(jlScoreBoard));
 		
 		JPanel jp = new JPanel();
 		jp.setLayout(new GridLayout(5, 3, 2, 2));
