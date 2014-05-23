@@ -20,11 +20,11 @@ import javax.swing.JLabel;
  */
 public class Canvas extends JComponent {
 	private BufferedImage biCasilla;
-	
 	private NodoTablero nodoTablero;
 	private ArrayList<NodoTablero> lista;
 	private JLabel jlScoreBoard;
 	private int score;
+	private String currentPieza;
 	/**
 	 * 
 	 */
@@ -36,8 +36,20 @@ public class Canvas extends JComponent {
 		lista = new ArrayList<>(50);
 	}
 	public void newMove(String idPieza){
+		this.currentPieza = idPieza;
+		Thread hilo = new Thread(new Runnable() {
+			
+			@Override
+			public void run() {
+				// TODO Auto-generated method stub
+				Canvas.this.newMoveHilo();
+			}
+		});
+		hilo.start();
+	}
+	private void newMoveHilo(){
 		boolean returned = false;
-		switch(idPieza){
+		switch(this.currentPieza){
 		case "1":
 			returned = encajarPieza01();
 			break;
@@ -89,25 +101,12 @@ public class Canvas extends JComponent {
 			NodoTablero c3 = lista.get(0);
 			lista.clear();
 			if (c3.father != null){
-				NodoTablero c2 = c3.father;
-				if (c2.father != null){
-					NodoTablero c1 = c2.father; // debe ser insercion
-					// animar
-					this.nodoTablero = c1;
-					repaint();
-					try{
-						System.out.println("pausa 1");
-						Thread.sleep(1000);
-					}catch(Exception e){
-						
-					}
-				}
+				NodoTablero c1 = c3.father;
 				// animar
-				this.nodoTablero = c2;
+				this.nodoTablero = c1;
 				repaint();
 				try{
-					System.out.println("pausa 2");
-					Thread.sleep(1000);
+					Thread.sleep(500);
 				}catch(Exception e){
 					
 				}
@@ -468,24 +467,24 @@ public class Canvas extends JComponent {
 		return returnable;
 	}
 	private NodoTablero comeLineas(NodoTablero c1){
-		NodoTablero c3 = c1.clone();
-		c3.father = c1;
+		NodoTablero nt = c1.clone();
+		nt.father = c1;
 		boolean continuar;
 		do {
 			continuar = false;
 			for_: for (int i = 0; i < 8; i++){ // fila
-				if (c3.isOcupied(i, 0)
-						&& c3.isOcupied(i, 1)
-						&& c3.isOcupied(i, 2)
-						&& c3.isOcupied(i, 3)
-						&& c3.isOcupied(i, 4)
-						&& c3.isOcupied(i, 5)
-						&& c3.isOcupied(i, 6)
-						&& c3.isOcupied(i, 7)
+				if (nt.isOcupied(i, 0)
+						&& nt.isOcupied(i, 1)
+						&& nt.isOcupied(i, 2)
+						&& nt.isOcupied(i, 3)
+						&& nt.isOcupied(i, 4)
+						&& nt.isOcupied(i, 5)
+						&& nt.isOcupied(i, 6)
+						&& nt.isOcupied(i, 7)
 						){ // es espacio libre
-					NodoTablero c2 = c3.clearoutRow(i);
+					nt.clearoutRow(i);
 					// corriemiento
-					c3 = c2.corrimientoRow(i);
+					nt.corrimientoRow(i);
 					continuar = true;
 					score += 10;
 					jlScoreBoard.setText(String.format("%d", score));
@@ -498,18 +497,18 @@ public class Canvas extends JComponent {
 		do {
 			continuar = false;
 			for_: for (int j = 0; j < 8; j++){ // columna
-				if (c3.isOcupied(0, j)
-						&& c3.isOcupied(1, j)
-						&& c3.isOcupied(2, j)
-						&& c3.isOcupied(3, j)
-						&& c3.isOcupied(4, j)
-						&& c3.isOcupied(5, j)
-						&& c3.isOcupied(6, j)
-						&& c3.isOcupied(7, j)
+				if (nt.isOcupied(0, j)
+						&& nt.isOcupied(1, j)
+						&& nt.isOcupied(2, j)
+						&& nt.isOcupied(3, j)
+						&& nt.isOcupied(4, j)
+						&& nt.isOcupied(5, j)
+						&& nt.isOcupied(6, j)
+						&& nt.isOcupied(7, j)
 						){ // es espacio libre
-					NodoTablero c2 = c3.clearoutColumn(j);
+					nt.clearoutColumn(j);
 					// corriemiento
-					c3 = c2.corrimientoColumn(j);
+					nt.corrimientoColumn(j);
 					continuar = true;
 					score += 10;
 					jlScoreBoard.setText(String.format("%d", score));
@@ -520,7 +519,7 @@ public class Canvas extends JComponent {
 			} // fin 2do for
 		} while (continuar);
 		
-		return c3;
+		return nt;
 	}
 	@Override
 	protected void paintComponent(Graphics g) {
